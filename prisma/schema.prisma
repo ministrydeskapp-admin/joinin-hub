@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime?
+  location    String?
+
+  publicSlug  String   @unique
+  adminKey    String   @unique
+
+  slots       SignupSlot[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SignupSlot {
+  id        String   @id @default(cuid())
+  name      String
+  details   String?
+  sortOrder Int      @default(0)
+
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  claim     SignupClaim?
+
+  createdAt DateTime @default(now())
+}
+
+model SignupClaim {
+  id          String   @id @default(cuid())
+  personName  String
+  description String?
+
+  slotId      String   @unique
+  slot        SignupSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+}
