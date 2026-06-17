@@ -103,7 +103,7 @@ export default async function PublicSignupPage({ params }: PageProps) {
               <div key={name} className="border rounded-lg p-4">
                 <h3 className="font-semibold text-lg mb-1">{name}</h3>
                 <p className="text-gray-500 mb-3">
-                  {slots.length} available
+                  {slots.length} needed
                 </p>
 
                 <div className="space-y-3">
@@ -154,7 +154,7 @@ export default async function PublicSignupPage({ params }: PageProps) {
             <div key={name} className="border rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-1">{name}</h3>
               <p className="text-green-700 mb-3">
-                {slots.length} claimed
+                {slots.length} fulfilled
               </p>
 
               <div className="space-y-2">
