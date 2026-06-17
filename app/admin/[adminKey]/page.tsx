@@ -101,7 +101,7 @@ export default async function AdminPage({ params }: PageProps) {
       <h2 className="text-2xl font-semibold mb-3">Signup Slots</h2>
 
       <div className="space-y-3">
-        {event.slots.map((slot) => (
+        {event.slots.map((slot: (typeof event.slots)[number]) => (
           <div key={slot.id} className="border rounded-lg p-4">
             <p className="font-medium">{slot.name}</p>
 
