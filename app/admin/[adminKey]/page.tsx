@@ -30,7 +30,9 @@ export default async function AdminPage({ params }: PageProps) {
   }
 
   const totalSlots = event.slots.length;
-  const claimedSlots = event.slots.filter((slot) => slot.claim).length;
+  const claimedSlots = event.slots.filter(
+  (slot: (typeof event.slots)[number]) => slot.claim
+).length;
   const remainingSlots = totalSlots - claimedSlots;
 
   return (
