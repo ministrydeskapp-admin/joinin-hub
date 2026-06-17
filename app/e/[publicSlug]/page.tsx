@@ -24,8 +24,13 @@ export default async function PublicSignupPage({ params }: PageProps) {
     return <main className="p-6">Signup sheet not found.</main>;
   }
 
-  const openSlots = event.slots.filter((slot) => !slot.claim);
-  const claimedSlots = event.slots.filter((slot) => slot.claim);
+  const openSlots = event.slots.filter(
+    (slot: (typeof event.slots)[number]) => !slot.claim
+  );
+
+  const claimedSlots = event.slots.filter(
+    (slot: (typeof event.slots)[number]) => slot.claim
+  );
 
   return (
     <main className="min-h-screen p-6 max-w-3xl mx-auto">
@@ -36,8 +41,12 @@ export default async function PublicSignupPage({ params }: PageProps) {
       )}
 
       <div className="border rounded-lg p-4 mb-6">
-        <p><strong>Date:</strong> {event.date?.toLocaleDateString() || "None"}</p>
-        <p><strong>Location:</strong> {event.location || "None"}</p>
+        <p>
+          <strong>Date:</strong> {event.date?.toLocaleDateString() || "None"}
+        </p>
+        <p>
+          <strong>Location:</strong> {event.location || "None"}
+        </p>
       </div>
 
       <h2 className="text-2xl font-semibold mb-3">Available Items</h2>
@@ -60,7 +69,7 @@ export default async function PublicSignupPage({ params }: PageProps) {
           </div>
 
           <div className="space-y-3">
-            {openSlots.map((slot) => (
+            {openSlots.map((slot: (typeof openSlots)[number]) => (
               <div key={slot.id} className="border rounded-lg p-4">
                 <label className="flex gap-3 items-start">
                   <input
@@ -99,7 +108,7 @@ export default async function PublicSignupPage({ params }: PageProps) {
         <p className="text-gray-600">No one has signed up yet.</p>
       ) : (
         <div className="space-y-3">
-          {claimedSlots.map((slot) => (
+          {claimedSlots.map((slot: (typeof claimedSlots)[number]) => (
             <div key={slot.id} className="border rounded-lg p-4">
               <p className="font-medium">{slot.name}</p>
               <p className="text-green-700">
