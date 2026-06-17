@@ -34,6 +34,7 @@ export default async function AdminPage({ params }: PageProps) {
   (slot: (typeof event.slots)[number]) => slot.claim
 ).length;
   const remainingSlots = totalSlots - claimedSlots;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
   return (
     <main className="min-h-screen p-6 max-w-3xl mx-auto">
@@ -45,12 +46,10 @@ export default async function AdminPage({ params }: PageProps) {
   <p className="font-semibold mb-2">Public Signup Link</p>
 
   <p className="break-all text-blue-600">
-    https://joinin-64n9vz7cg-ministrydesk.vercel.app/e/{event.publicSlug}
+    {appUrl}/e/{event.publicSlug}
   </p>
 
-  <CopyLinkButton
-    link={`https://joinin-64n9vz7cg-ministrydesk.vercel.app/e/${event.publicSlug}`}
-  />
+  <CopyLinkButton link={`${appUrl}/e/${event.publicSlug}`} />
 </div>
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="border rounded-lg p-4 text-center">
