@@ -41,15 +41,13 @@ export default async function AdminPage({ params }: PageProps) {
 
       <p className="text-gray-600 mb-4">Admin view</p>
 
-      <div className="border rounded-lg p-4 mb-6">
-        <p className="font-semibold mb-2">Public Signup Link</p>
+<div className="border rounded-lg p-4 mb-6">
+  <p className="font-semibold mb-2">Public Signup Link</p>
 
-        <p className="break-all text-blue-600">
-          http://localhost:3000/e/{event.publicSlug}
-        </p>
+  <p className="break-all text-blue-600">/e/{event.publicSlug}</p>
 
-        <CopyLinkButton link={`http://localhost:3000/e/${event.publicSlug}`} />
-      </div>
+  <CopyLinkButton link={`/e/${event.publicSlug}`} />
+</div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="border rounded-lg p-4 text-center">
