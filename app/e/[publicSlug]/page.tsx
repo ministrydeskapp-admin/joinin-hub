@@ -7,6 +7,33 @@ type PageProps = {
   }>;
 };
 
+type Slot = {
+  id: string;
+  name: string;
+  details: string | null;
+  sortOrder: number;
+  eventId: string;
+  createdAt: Date;
+  claim: {
+    id: string;
+    personName: string;
+    description: string | null;
+    slotId: string;
+    createdAt: Date;
+  } | null;
+};
+
+function groupSlotsByName(slots: Slot[]) {
+  return slots.reduce<Record<string, Slot[]>>((groups, slot) => {
+    if (!groups[slot.name]) {
+      groups[slot.name] = [];
+    }
+
+    groups[slot.name].push(slot);
+    return groups;
+  }, {});
+}
+
 export default async function PublicSignupPage({ params }: PageProps) {
   const { publicSlug } = await params;
 
@@ -25,12 +52,15 @@ export default async function PublicSignupPage({ params }: PageProps) {
   }
 
   const openSlots = event.slots.filter(
-    (slot: (typeof event.slots)[number]) => !slot.claim
+    (slot: Slot) => !slot.claim
   );
 
   const claimedSlots = event.slots.filter(
-    (slot: (typeof event.slots)[number]) => slot.claim
+    (slot: Slot) => slot.claim
   );
+
+  const groupedOpenSlots = groupSlotsByName(openSlots as Slot[]);
+  const groupedClaimedSlots = groupSlotsByName(claimedSlots as Slot[]);
 
   return (
     <main className="min-h-screen p-6 max-w-3xl mx-auto">
@@ -68,27 +98,39 @@ export default async function PublicSignupPage({ params }: PageProps) {
             />
           </div>
 
-          <div className="space-y-3">
-            {openSlots.map((slot: (typeof openSlots)[number]) => (
-              <div key={slot.id} className="border rounded-lg p-4">
-                <label className="flex gap-3 items-start">
-                  <input
-                    type="checkbox"
-                    name="slotIds"
-                    value={slot.id}
-                    className="mt-1"
-                  />
+          <div className="space-y-4">
+            {Object.entries(groupedOpenSlots).map(([name, slots]) => (
+              <div key={name} className="border rounded-lg p-4">
+                <h3 className="font-semibold text-lg mb-1">{name}</h3>
+                <p className="text-gray-500 mb-3">
+                  {slots.length} available
+                </p>
 
-                  <div className="w-full">
-                    <p className="font-medium">{slot.name}</p>
-                    <input
-                      type="text"
-                      name={`description-${slot.id}`}
-                      placeholder={`Description for ${slot.name} - ex: Doritos`}
-                      className="w-full border rounded-lg p-2 mt-2"
-                    />
-                  </div>
-                </label>
+                <div className="space-y-3">
+                  {slots.map((slot) => (
+                    <label
+                      key={slot.id}
+                      className="flex gap-3 items-start border rounded-lg p-3"
+                    >
+                      <input
+                        type="checkbox"
+                        name="slotIds"
+                        value={slot.id}
+                        className="mt-1"
+                      />
+
+                      <div className="w-full">
+                        <p className="font-medium">Claim one {slot.name}</p>
+                        <input
+                          type="text"
+                          name={`description-${slot.id}`}
+                          placeholder={`What kind? Ex: Doritos, Hawaiian rolls`}
+                          className="w-full border rounded-lg p-2 mt-2"
+                        />
+                      </div>
+                    </label>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
@@ -107,14 +149,26 @@ export default async function PublicSignupPage({ params }: PageProps) {
       {claimedSlots.length === 0 ? (
         <p className="text-gray-600">No one has signed up yet.</p>
       ) : (
-        <div className="space-y-3">
-          {claimedSlots.map((slot: (typeof claimedSlots)[number]) => (
-            <div key={slot.id} className="border rounded-lg p-4">
-              <p className="font-medium">{slot.name}</p>
-              <p className="text-green-700">
-                {slot.claim?.personName}
-                {slot.claim?.description ? ` — ${slot.claim.description}` : ""}
+        <div className="space-y-4">
+          {Object.entries(groupedClaimedSlots).map(([name, slots]) => (
+            <div key={name} className="border rounded-lg p-4">
+              <h3 className="font-semibold text-lg mb-1">{name}</h3>
+              <p className="text-green-700 mb-3">
+                {slots.length} claimed
               </p>
+
+              <div className="space-y-2">
+                {slots.map((slot) => (
+                  <div key={slot.id} className="border rounded-lg p-3">
+                    <p className="text-green-700">
+                      {slot.claim?.personName}
+                      {slot.claim?.description
+                        ? ` — ${slot.claim.description}`
+                        : ""}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>

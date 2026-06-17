@@ -1,33 +1,35 @@
-# JoinIn Hub Roadmap
+# JoinIn Hub Features
 
-## MVP Complete
-- Create signup sheets
+## MVP Completed
+- Create signup sheet
 - Public signup page
-- Multi-select claiming
-- Item descriptions
-- Admin dashboard
-- Copy public link
-- Remove claims
-- Remove items
-- Edit event
+- Admin page
 - Add items
-- Statistics dashboard
+- Remove items
+- Claim items
+- Remove claims
+- Edit event
+- Copy public link
+- Vercel deployment
+- Neon database
 
 ## Next Features
-- Group duplicate items
-- Phone number field
-- Email field
-- Event closing
-- QR code generation
-- Duplicate event
-- Mobile polish
-- Confirmation messages
 
-## Future
+### High Priority
+- Group duplicate items
+- Custom domain
+- Event deletion
+- Edit individual items
+- Better mobile styling
+
+### Medium Priority
+- Event archive
+- Export signup list
+- Email notifications
+- Church branding options
+
+### Future
 - User accounts
-- Teams
-- Church branding
-- Email reminders
-- Text reminders
+- Recurring events
 - Templates
-- CHMS integration
+- Multiple organizations
