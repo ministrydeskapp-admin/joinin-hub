@@ -15,12 +15,13 @@
 - Group duplicate items on public page
 - Group duplicate items on admin page
 - Delete event with cascading slot and claim removal
+- Add item descriptions to created and added signup slots
+- Edit item groups from the admin event page
 
 ## Next Features
 
 ### High Priority
 - Custom domain
-- Edit individual items
 - Better mobile styling
 
 ### Medium Priority

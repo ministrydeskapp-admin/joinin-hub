@@ -114,6 +114,8 @@
 - Improved UI validation in `app/create/page.tsx` by disabling the add-item button when input is invalid
 - Added clipboard feature safety handling in `app/admin/[adminKey]/CopyLinkButton.tsx`
 - Added a secure event deletion flow in `app/admin/[adminKey]/actions.ts` and `app/admin/[adminKey]/DeleteEventButton.tsx` with a confirm prompt, admin-key verification, and redirect to `/admin`
+- Added item-group descriptions to create/add-item flows and displayed them on the admin and public signup pages
+- Added an admin item-group edit workflow at `/admin/[adminKey]/items/[itemName]/edit` with admin-key ownership checks and safe slot updates
 
 
 

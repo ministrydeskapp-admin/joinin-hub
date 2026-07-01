@@ -46,6 +46,7 @@ export async function addSlots(formData: FormData) {
   const eventId = String(formData.get("eventId") || "");
   const name = String(formData.get("name") || "").trim();
   const quantity = Number(formData.get("quantity") || 1);
+  const details = String(formData.get("details") || "").trim();
 
   if (!adminKey || !eventId || !name || quantity < 1) return;
 
@@ -75,6 +76,7 @@ export async function addSlots(formData: FormData) {
   await prisma.signupSlot.createMany({
     data: Array.from({ length: quantity }).map((_, index) => ({
       name,
+      details: details || null,
       eventId: event.id,
       sortOrder: startOrder + index,
     })),
@@ -104,6 +106,41 @@ export async function updateEvent(formData: FormData) {
   });
 
   revalidatePath(`/admin/${adminKey}`);
+  redirect(`/admin/${adminKey}`);
+}
+
+export async function updateItemGroup(formData: FormData) {
+  const adminKey = String(formData.get("adminKey") || "").trim();
+  const currentName = String(formData.get("currentName") || "").trim();
+  const newName = String(formData.get("name") || "").trim();
+  const details = String(formData.get("details") || "").trim();
+
+  if (!adminKey || !currentName || !newName) {
+    redirect(`/admin/${adminKey || ""}`);
+  }
+
+  const event = await prisma.event.findUnique({
+    where: { adminKey },
+    select: { id: true, publicSlug: true },
+  });
+
+  if (!event) {
+    redirect("/admin");
+  }
+
+  await prisma.signupSlot.updateMany({
+    where: {
+      eventId: event.id,
+      name: currentName,
+    },
+    data: {
+      name: newName,
+      details: details || null,
+    },
+  });
+
+  revalidatePath(`/admin/${adminKey}`);
+  revalidatePath(`/e/${event.publicSlug}`);
   redirect(`/admin/${adminKey}`);
 }
 

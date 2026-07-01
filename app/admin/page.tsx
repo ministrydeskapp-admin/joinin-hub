@@ -39,9 +39,18 @@ export default async function AdminDashboardPage() {
     <main className="min-h-screen p-6 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
 
-      <p className="text-gray-600 mb-6">
-        View and manage all JoinIn Hub signup sheets.
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <p className="text-gray-600">
+          View and manage all JoinIn Hub signup sheets.
+        </p>
+
+        <Link
+          href="/create"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+        >
+          + Create New Signup Sheet
+        </Link>
+      </div>
 
       {events.length === 0 ? (
         <p className="text-gray-600">No signup sheets created yet.</p>

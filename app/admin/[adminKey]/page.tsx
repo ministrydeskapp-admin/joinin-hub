@@ -177,7 +177,20 @@ export default async function AdminPage({ params }: PageProps) {
 
           return (
             <div key={name} className="border rounded-lg p-4">
-              <h3 className="text-lg font-semibold">{name}</h3>
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <h3 className="text-lg font-semibold">{name}</h3>
+
+                <Link
+                  href={`/admin/${adminKey}/items/${encodeURIComponent(name)}/edit`}
+                  className="border border-blue-600 text-blue-600 px-3 py-1 rounded text-sm"
+                >
+                  Edit Item
+                </Link>
+              </div>
+
+              {group[0]?.details && (
+                <p className="text-sm text-gray-600 mb-3">{group[0].details}</p>
+              )}
 
               <p className="text-gray-600 mb-3">
                 {group.length} total · {claimed.length} claimed ·{" "}

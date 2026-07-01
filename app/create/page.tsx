@@ -7,12 +7,14 @@ type SignupItem = {
   id: number;
   name: string;
   quantity: number;
+  details: string;
 };
 
 export default function CreatePage() {
   const [items, setItems] = useState<SignupItem[]>([]);
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [itemDetails, setItemDetails] = useState("");
 
   const canAddItem = itemName.trim().length > 0 && quantity > 0 && Number.isFinite(quantity);
 
@@ -25,11 +27,13 @@ export default function CreatePage() {
         id: Date.now(),
         name: itemName.trim(),
         quantity,
+        details: itemDetails.trim(),
       },
     ]);
 
     setItemName("");
     setQuantity(1);
+    setItemDetails("");
   }
 
   function removeItem(id: number) {
@@ -111,6 +115,16 @@ export default function CreatePage() {
           </div>
         </div>
 
+        <div>
+          <label className="block font-medium mb-1">Item Description (optional)</label>
+          <textarea
+            value={itemDetails}
+            onChange={(e) => setItemDetails(e.target.value)}
+            placeholder="Each signup is for two 2-liter drinks."
+            className="w-full border rounded-lg p-3"
+          />
+        </div>
+
         <button
           type="button"
           onClick={addItem}
@@ -129,9 +143,12 @@ export default function CreatePage() {
                 key={item.id}
                 className="flex justify-between items-center border-b pb-2"
               >
-                <span>
-                  {item.name} — {item.quantity} needed
-                </span>
+                <div>
+                  <p>
+                    {item.name} — {item.quantity} needed
+                  </p>
+                  {item.details && <p className="text-sm text-gray-600">{item.details}</p>}
+                </div>
 
                 <button
                   type="button"

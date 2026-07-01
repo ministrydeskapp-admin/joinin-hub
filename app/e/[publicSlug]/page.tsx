@@ -102,6 +102,9 @@ export default async function PublicSignupPage({ params }: PageProps) {
             {Object.entries(groupedOpenSlots).map(([name, slots]) => (
               <div key={name} className="border rounded-lg p-4">
                 <h3 className="font-semibold text-lg mb-1">{name}</h3>
+                {slots[0]?.details && (
+                  <p className="text-sm text-gray-600 mb-3">{slots[0].details}</p>
+                )}
                 <p className="text-gray-500 mb-3">
                   {slots.length} needed
                 </p>
@@ -153,6 +156,9 @@ export default async function PublicSignupPage({ params }: PageProps) {
           {Object.entries(groupedClaimedSlots).map(([name, slots]) => (
             <div key={name} className="border rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-1">{name}</h3>
+              {slots[0]?.details && (
+                <p className="text-sm text-gray-600 mb-3">{slots[0].details}</p>
+              )}
               <p className="text-green-700 mb-3">
                 {slots.length} fulfilled
               </p>

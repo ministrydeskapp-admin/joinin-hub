@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 type CreateItem = {
   name: string;
   quantity: number;
+  details: string | null;
 };
 
 function makeKey() {
@@ -33,9 +34,10 @@ function parseItems(itemsJson: string) {
 
       const name = String((item as { name?: unknown }).name || "").trim();
       const quantity = Number((item as { quantity?: unknown }).quantity ?? 0);
+      const details = String((item as { details?: unknown }).details || "").trim();
 
       return name && Number.isFinite(quantity) && quantity > 0
-        ? { name, quantity }
+        ? { name, quantity, details: details || null }
         : null;
     })
     .filter((item): item is CreateItem => item !== null);
@@ -69,6 +71,7 @@ export async function createSignupSheet(formData: FormData) {
         create: items.flatMap((item, itemIndex) =>
           Array.from({ length: item.quantity }).map((_, slotIndex) => ({
             name: item.name,
+            details: item.details,
             sortOrder: itemIndex * 100 + slotIndex,
           }))
         ),
