@@ -3,30 +3,35 @@
 ## MVP Completed
 - Create signup sheet
 - Public signup page
-- Admin page
+- Admin dashboard
+- Admin event page
 - Add items
 - Remove items
 - Claim items
 - Remove claims
 - Edit event
+- Edit item groups
+- Item descriptions/details
 - Copy public link
 - Vercel deployment
 - Neon database
 - Group duplicate items on public page
 - Group duplicate items on admin page
-- Delete event with cascading slot and claim removal
-- Add item descriptions to created and added signup slots
-- Edit item groups from the admin event page
+- Create New Signup Sheet dashboard button
+- Event deletion
+- Improved public link generation
+- Custom delete confirmation modal
 
 ## Next Features
 
 ### High Priority
-- Custom domain
 - Better mobile styling
+- UI polish
+- Custom domain
 
 ### Medium Priority
 - Event archive
-- Export signup list
+- Export signup list (CSV)
 - Email notifications
 - Church branding options
 
@@ -36,9 +41,10 @@
 - Templates
 - Multiple organizations
 
-### Public Page Cleanup
-- Show "3 needed" instead of multiple cards
+### UI Polish
 - Better spacing between groups
-- Better mobile layout
-- Cleaner claim descriptions
-- Show remaining vs fulfilled counts
+- Cleaner item cards
+- Consistent button styling
+- Better empty states
+- Improved typography
+- Mobile layout improvements
