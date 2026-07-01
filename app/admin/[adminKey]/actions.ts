@@ -106,3 +106,29 @@ export async function updateEvent(formData: FormData) {
   revalidatePath(`/admin/${adminKey}`);
   redirect(`/admin/${adminKey}`);
 }
+
+export async function deleteEvent(formData: FormData) {
+  const adminKey = String(formData.get("adminKey") || "").trim();
+
+  if (!adminKey) {
+    revalidatePath("/admin");
+    redirect("/admin");
+  }
+
+  const existingEvent = await prisma.event.findUnique({
+    where: { adminKey },
+    select: { id: true },
+  });
+
+  if (!existingEvent) {
+    revalidatePath("/admin");
+    redirect("/admin");
+  }
+
+  await prisma.event.delete({
+    where: { adminKey },
+  });
+
+  revalidatePath("/admin");
+  redirect("/admin");
+}

@@ -62,6 +62,7 @@
 - Neon database
 - Group duplicate items on public page
 - Group duplicate items on admin page
+- Delete event with cascading slot and claim removal
 
 ## Features Planned
 ### High Priority
@@ -112,6 +113,7 @@
 - Added a database connection error fallback rendering in `app/admin/page.tsx`
 - Improved UI validation in `app/create/page.tsx` by disabling the add-item button when input is invalid
 - Added clipboard feature safety handling in `app/admin/[adminKey]/CopyLinkButton.tsx`
+- Added a secure event deletion flow in `app/admin/[adminKey]/actions.ts` and `app/admin/[adminKey]/DeleteEventButton.tsx` with a confirm prompt, admin-key verification, and redirect to `/admin`
 
 
 

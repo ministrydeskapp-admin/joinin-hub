@@ -14,12 +14,12 @@
 - Neon database
 - Group duplicate items on public page
 - Group duplicate items on admin page
+- Delete event with cascading slot and claim removal
 
 ## Next Features
 
 ### High Priority
 - Custom domain
-- Event deletion
 - Edit individual items
 - Better mobile styling
 

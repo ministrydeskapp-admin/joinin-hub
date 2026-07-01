@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import CopyLinkButton from "./CopyLinkButton";
-import { deleteClaim, deleteSlot } from "./actions";
+import DeleteEventButton from "./DeleteEventButton";
+import { deleteClaim, deleteEvent, deleteSlot } from "./actions";
 
 type PageProps = {
   params: Promise<{
@@ -36,6 +38,29 @@ function groupSlotsByName(slots: Slot[]) {
   }, {});
 }
 
+async function getPublicAppUrl() {
+  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (configuredUrl) {
+    return configuredUrl.replace(/\/$/, "");
+  }
+
+  const vercelUrl = process.env.VERCEL_URL?.trim();
+  if (vercelUrl) {
+    return `https://${vercelUrl}`;
+  }
+
+  const headerList = await headers();
+  const forwardedProto = headerList.get("x-forwarded-proto")?.split(",")[0]?.trim();
+  const forwardedHost = headerList.get("x-forwarded-host")?.trim();
+  const host = forwardedHost || headerList.get("host")?.trim();
+
+  if (host) {
+    return `${forwardedProto || "http"}://${host}`;
+  }
+
+  return "http://localhost:3000";
+}
+
 export default async function AdminPage({ params }: PageProps) {
   const { adminKey } = await params;
 
@@ -64,7 +89,7 @@ export default async function AdminPage({ params }: PageProps) {
   const remainingSlots = totalSlots - claimedSlots;
   const groupedSlots = groupSlotsByName(slots);
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const appUrl = await getPublicAppUrl();
 
   return (
     <main className="min-h-screen p-6 max-w-3xl mx-auto">
@@ -119,7 +144,7 @@ export default async function AdminPage({ params }: PageProps) {
         </p>
       </div>
 
-      <div className="flex gap-3 mb-6">
+      <div className="flex flex-wrap gap-3 mb-4">
         <Link
           href={`/admin/${adminKey}/edit`}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg"
@@ -133,6 +158,14 @@ export default async function AdminPage({ params }: PageProps) {
         >
           Add Items
         </Link>
+      </div>
+
+      <div className="border border-red-200 rounded-lg p-4 mb-6 bg-red-50">
+        <p className="font-semibold text-red-700 mb-2">Danger zone</p>
+        <p className="text-sm text-red-600 mb-3">
+          This deletes the event, its slots, and all claims.
+        </p>
+        <DeleteEventButton adminKey={adminKey} deleteEvent={deleteEvent} />
       </div>
 
       <h2 className="text-2xl font-semibold mb-3">Signup Items</h2>
