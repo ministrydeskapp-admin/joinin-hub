@@ -10,9 +10,14 @@ export async function deleteClaim(formData: FormData) {
 
   if (!claimId || !adminKey) return;
 
-  await prisma.signupClaim.delete({
+  await prisma.signupClaim.deleteMany({
     where: {
       id: claimId,
+      slot: {
+        event: {
+          adminKey,
+        },
+      },
     },
   });
 
@@ -25,9 +30,12 @@ export async function deleteSlot(formData: FormData) {
 
   if (!slotId || !adminKey) return;
 
-  await prisma.signupSlot.delete({
+  await prisma.signupSlot.deleteMany({
     where: {
       id: slotId,
+      event: {
+        adminKey,
+      },
     },
   });
 
@@ -41,11 +49,34 @@ export async function addSlots(formData: FormData) {
 
   if (!adminKey || !eventId || !name || quantity < 1) return;
 
+  const event = await prisma.event.findFirst({
+    where: {
+      id: eventId,
+      adminKey,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!event) return;
+
+  const aggregate = await prisma.signupSlot.aggregate({
+    where: {
+      eventId: event.id,
+    },
+    _max: {
+      sortOrder: true,
+    },
+  });
+
+  const startOrder = (aggregate._max.sortOrder ?? -1) + 1;
+
   await prisma.signupSlot.createMany({
     data: Array.from({ length: quantity }).map((_, index) => ({
       name,
-      eventId,
-      sortOrder: index,
+      eventId: event.id,
+      sortOrder: startOrder + index,
     })),
   });
 

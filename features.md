@@ -12,11 +12,12 @@
 - Copy public link
 - Vercel deployment
 - Neon database
+- Group duplicate items on public page
+- Group duplicate items on admin page
 
 ## Next Features
 
 ### High Priority
-- Group duplicate items
 - Custom domain
 - Event deletion
 - Edit individual items

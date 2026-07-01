@@ -3,8 +3,42 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
+type CreateItem = {
+  name: string;
+  quantity: number;
+};
+
 function makeKey() {
-  return Math.random().toString(36).substring(2, 10);
+  return crypto.randomUUID();
+}
+
+function parseItems(itemsJson: string) {
+  let parsed: unknown = [];
+
+  try {
+    parsed = JSON.parse(itemsJson);
+  } catch {
+    return [];
+  }
+
+  if (!Array.isArray(parsed)) {
+    return [];
+  }
+
+  return parsed
+    .map((item) => {
+      if (typeof item !== "object" || item === null || Array.isArray(item)) {
+        return null;
+      }
+
+      const name = String((item as { name?: unknown }).name || "").trim();
+      const quantity = Number((item as { quantity?: unknown }).quantity ?? 0);
+
+      return name && Number.isFinite(quantity) && quantity > 0
+        ? { name, quantity }
+        : null;
+    })
+    .filter((item): item is CreateItem => item !== null);
 }
 
 export async function createSignupSheet(formData: FormData) {
@@ -18,10 +52,7 @@ export async function createSignupSheet(formData: FormData) {
     throw new Error("Event name is required.");
   }
 
-  const items = JSON.parse(itemsJson) as {
-    name: string;
-    quantity: number;
-  }[];
+  const items = parseItems(itemsJson);
 
   const publicSlug = makeKey();
   const adminKey = makeKey();

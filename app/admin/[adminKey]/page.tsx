@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import CopyLinkButton from "./CopyLinkButton";
 import { deleteClaim, deleteSlot } from "./actions";
@@ -67,7 +68,13 @@ export default async function AdminPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen p-6 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-2">{event.title}</h1>
+      <div className="flex justify-between items-center gap-4 mb-4">
+        <h1 className="text-3xl font-bold">{event.title}</h1>
+
+        <Link href="/admin" className="border px-4 py-2 rounded-lg shrink-0">
+          ← Dashboard
+        </Link>
+      </div>
 
       <p className="text-gray-600 mb-4">Admin view</p>
 
@@ -113,19 +120,19 @@ export default async function AdminPage({ params }: PageProps) {
       </div>
 
       <div className="flex gap-3 mb-6">
-        <a
+        <Link
           href={`/admin/${adminKey}/edit`}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg"
         >
           Edit Event
-        </a>
+        </Link>
 
-        <a
+        <Link
           href={`/admin/${adminKey}/items`}
           className="bg-green-600 text-white px-4 py-2 rounded-lg"
         >
           Add Items
-        </a>
+        </Link>
       </div>
 
       <h2 className="text-2xl font-semibold mb-3">Signup Items</h2>
@@ -140,7 +147,8 @@ export default async function AdminPage({ params }: PageProps) {
               <h3 className="text-lg font-semibold">{name}</h3>
 
               <p className="text-gray-600 mb-3">
-                {group.length} total · {claimed.length} claimed · {open.length} remaining
+                {group.length} total · {claimed.length} claimed ·{" "}
+                {open.length} remaining
               </p>
 
               {claimed.length > 0 && (

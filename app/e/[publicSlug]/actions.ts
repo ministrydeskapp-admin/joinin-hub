@@ -4,25 +4,39 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
 export async function claimSlots(formData: FormData) {
-  const publicSlug = String(formData.get("publicSlug") || "");
+  const publicSlug = String(formData.get("publicSlug") || "").trim();
   const personName = String(formData.get("personName") || "").trim();
-  const selectedSlotIds = formData.getAll("slotIds").map(String);
+  const selectedSlotIds = formData
+    .getAll("slotIds")
+    .map(String)
+    .filter(Boolean);
 
-  if (!personName || selectedSlotIds.length === 0) {
+  if (!publicSlug || !personName || selectedSlotIds.length === 0) {
     return;
   }
 
-  for (const slotId of selectedSlotIds) {
-    const description = String(formData.get(`description-${slotId}`) || "").trim();
+  const validSlots = await prisma.signupSlot.findMany({
+    where: {
+      id: { in: selectedSlotIds },
+      event: { publicSlug },
+      claim: null,
+    },
+    select: { id: true },
+  });
 
-    await prisma.signupClaim.create({
-      data: {
-        personName,
-        description: description || null,
-        slotId,
-      },
-    });
+  if (validSlots.length === 0) {
+    return;
   }
+
+  await prisma.signupClaim.createMany({
+    data: validSlots.map((slot) => ({
+      personName,
+      description:
+        String(formData.get(`description-${slot.id}`) || "").trim() || null,
+      slotId: slot.id,
+    })),
+    skipDuplicates: true,
+  });
 
   revalidatePath(`/e/${publicSlug}`);
 }

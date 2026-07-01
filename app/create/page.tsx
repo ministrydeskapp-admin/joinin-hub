@@ -14,8 +14,10 @@ export default function CreatePage() {
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState(1);
 
+  const canAddItem = itemName.trim().length > 0 && quantity > 0 && Number.isFinite(quantity);
+
   function addItem() {
-    if (!itemName.trim()) return;
+    if (!canAddItem) return;
 
     setItems([
       ...items,
@@ -112,7 +114,8 @@ export default function CreatePage() {
         <button
           type="button"
           onClick={addItem}
-          className="border px-4 py-2 rounded-lg"
+          disabled={!canAddItem}
+          className="border px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Add Item
         </button>

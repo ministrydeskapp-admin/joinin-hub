@@ -6,12 +6,19 @@ export default function CopyLinkButton({ link }: { link: string }) {
   const [copied, setCopied] = useState(false);
 
   async function copyLink() {
-    await navigator.clipboard.writeText(link);
-    setCopied(true);
+    if (!navigator.clipboard) {
+      return;
+    }
 
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied(true);
+      window.setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch {
+      // Clipboard permission denied or unavailable.
+    }
   }
 
   return (

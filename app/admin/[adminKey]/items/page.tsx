@@ -21,6 +21,13 @@ export default async function AddItemsPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen p-6 max-w-2xl mx-auto">
+      <Link
+        href={`/admin/${adminKey}`}
+        className="border px-4 py-2 rounded-lg inline-block mb-4"
+      >
+        ← Back to Event
+      </Link>
+
       <h1 className="text-3xl font-bold mb-2">Add Items</h1>
 
       <p className="text-gray-600 mb-6">
@@ -60,12 +67,12 @@ export default async function AddItemsPage({ params }: PageProps) {
             Add Items
           </button>
 
-            <Link
+          <Link
             href={`/admin/${adminKey}`}
             className="border px-4 py-2 rounded-lg"
-            >
+          >
             Cancel
-            </Link>
+          </Link>
         </div>
       </form>
     </main>
