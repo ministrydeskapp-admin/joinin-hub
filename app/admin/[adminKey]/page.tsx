@@ -8,6 +8,33 @@ type PageProps = {
   }>;
 };
 
+type Slot = {
+  id: string;
+  name: string;
+  details: string | null;
+  sortOrder: number;
+  eventId: string;
+  createdAt: Date;
+  claim: {
+    id: string;
+    personName: string;
+    description: string | null;
+    slotId: string;
+    createdAt: Date;
+  } | null;
+};
+
+function groupSlotsByName(slots: Slot[]) {
+  return slots.reduce<Record<string, Slot[]>>((groups, slot) => {
+    if (!groups[slot.name]) {
+      groups[slot.name] = [];
+    }
+
+    groups[slot.name].push(slot);
+    return groups;
+  }, {});
+}
+
 export default async function AdminPage({ params }: PageProps) {
   const { adminKey } = await params;
 
@@ -29,11 +56,13 @@ export default async function AdminPage({ params }: PageProps) {
     return <main className="p-6">Signup sheet not found.</main>;
   }
 
-  const totalSlots = event.slots.length;
-  const claimedSlots = event.slots.filter(
-  (slot: (typeof event.slots)[number]) => slot.claim
-).length;
+  const slots = event.slots as Slot[];
+
+  const totalSlots = slots.length;
+  const claimedSlots = slots.filter((slot) => slot.claim).length;
   const remainingSlots = totalSlots - claimedSlots;
+  const groupedSlots = groupSlotsByName(slots);
+
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
   return (
@@ -42,15 +71,16 @@ export default async function AdminPage({ params }: PageProps) {
 
       <p className="text-gray-600 mb-4">Admin view</p>
 
-<div className="border rounded-lg p-4 mb-6">
-  <p className="font-semibold mb-2">Public Signup Link</p>
+      <div className="border rounded-lg p-4 mb-6">
+        <p className="font-semibold mb-2">Public Signup Link</p>
 
-  <p className="break-all text-blue-600">
-    {appUrl}/e/{event.publicSlug}
-  </p>
+        <p className="break-all text-blue-600">
+          {appUrl}/e/{event.publicSlug}
+        </p>
 
-  <CopyLinkButton link={`${appUrl}/e/${event.publicSlug}`} />
-</div>
+        <CopyLinkButton link={`${appUrl}/e/${event.publicSlug}`} />
+      </div>
+
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="border rounded-lg p-4 text-center">
           <p className="text-sm text-gray-500">Needed</p>
@@ -98,51 +128,88 @@ export default async function AdminPage({ params }: PageProps) {
         </a>
       </div>
 
-      <h2 className="text-2xl font-semibold mb-3">Signup Slots</h2>
+      <h2 className="text-2xl font-semibold mb-3">Signup Items</h2>
 
-      <div className="space-y-3">
-        {event.slots.map((slot: (typeof event.slots)[number]) => (
-          <div key={slot.id} className="border rounded-lg p-4">
-            <p className="font-medium">{slot.name}</p>
+      <div className="space-y-4">
+        {Object.entries(groupedSlots).map(([name, group]) => {
+          const claimed = group.filter((slot) => slot.claim);
+          const open = group.filter((slot) => !slot.claim);
 
-            {slot.claim ? (
-              <div>
-                <p className="text-green-700 mb-2">
-                  Claimed by {slot.claim.personName}
-                  {slot.claim.description ? ` — ${slot.claim.description}` : ""}
-                </p>
+          return (
+            <div key={name} className="border rounded-lg p-4">
+              <h3 className="text-lg font-semibold">{name}</h3>
 
-                <form action={deleteClaim}>
-                  <input type="hidden" name="claimId" value={slot.claim.id} />
-                  <input type="hidden" name="adminKey" value={adminKey} />
+              <p className="text-gray-600 mb-3">
+                {group.length} total · {claimed.length} claimed · {open.length} remaining
+              </p>
 
-                  <button
-                    type="submit"
-                    className="border border-orange-500 text-orange-600 px-3 py-1 rounded"
-                  >
-                    Remove Claim
-                  </button>
-                </form>
-              </div>
-            ) : (
-              <div>
-                <p className="text-gray-500 mb-2">Open</p>
+              {claimed.length > 0 && (
+                <div className="mb-4 space-y-2">
+                  <p className="font-medium text-green-700">Claimed</p>
 
-                <form action={deleteSlot}>
-                  <input type="hidden" name="slotId" value={slot.id} />
-                  <input type="hidden" name="adminKey" value={adminKey} />
+                  {claimed.map((slot) => (
+                    <div key={slot.id} className="border rounded-lg p-3">
+                      <p className="text-green-700 mb-2">
+                        {slot.claim?.personName}
+                        {slot.claim?.description
+                          ? ` — ${slot.claim.description}`
+                          : ""}
+                      </p>
 
-                  <button
-                    type="submit"
-                    className="bg-red-600 text-white px-3 py-1 rounded"
-                  >
-                    Remove Item
-                  </button>
-                </form>
-              </div>
-            )}
-          </div>
-        ))}
+                      <form action={deleteClaim}>
+                        <input
+                          type="hidden"
+                          name="claimId"
+                          value={slot.claim?.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="adminKey"
+                          value={adminKey}
+                        />
+
+                        <button
+                          type="submit"
+                          className="border border-orange-500 text-orange-600 px-3 py-1 rounded"
+                        >
+                          Remove Claim
+                        </button>
+                      </form>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {open.length > 0 && (
+                <div className="space-y-2">
+                  <p className="font-medium text-gray-700">Open</p>
+
+                  {open.map((slot) => (
+                    <div key={slot.id} className="border rounded-lg p-3">
+                      <p className="text-gray-500 mb-2">Open {slot.name}</p>
+
+                      <form action={deleteSlot}>
+                        <input type="hidden" name="slotId" value={slot.id} />
+                        <input
+                          type="hidden"
+                          name="adminKey"
+                          value={adminKey}
+                        />
+
+                        <button
+                          type="submit"
+                          className="bg-red-600 text-white px-3 py-1 rounded"
+                        >
+                          Remove Item
+                        </button>
+                      </form>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </main>
   );

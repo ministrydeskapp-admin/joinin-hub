@@ -33,3 +33,10 @@
 - Recurring events
 - Templates
 - Multiple organizations
+
+### Public Page Cleanup
+- Show "3 needed" instead of multiple cards
+- Better spacing between groups
+- Better mobile layout
+- Cleaner claim descriptions
+- Show remaining vs fulfilled counts
